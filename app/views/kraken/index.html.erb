@@ -1,0 +1,56 @@
+<body class="sb-nav-fixed">
+  <!--<%#= render 'nav' %>
+  <div id="layoutSidenav">
+    <%#= render 'sidenav' %>
+    <div id="layoutSidenav_content">-->
+
+      <main>
+        <div class="container-fluid">
+
+          <h1 class="mt-4"><!--Dashboard --></h1>
+					<!--                   
+          <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Dashboard</li>
+          </ol> -->
+
+          <%= render 'cards' %>
+          <%= render 'charts' %>
+          <%= render 'datatable' %>
+
+          <!-- <%= button_to 'Call Action', button_path, method: :post %> -->
+        </div>
+      </main>
+
+      <!-- <%#= render 'footer' %>
+    </div>
+  </div>-->
+
+  <%= render 'kraken/js/chart-area-demo' %>
+  <%= render 'kraken/js/chart-bar-demo' %>
+  <%= render 'kraken/js/chart-pie-demo' %>
+
+  <script type="text/javascript">
+		// Call the dataTables jQuery plugin
+		$(document).ready(function() {
+		  $('#dataTable').DataTable();
+		});
+
+		(function($) {
+			"use strict";
+
+			// Add active state to sidbar nav links
+			var path = window.location.href; // because the 'href' property of the DOM element is the absolute path
+				$("#layoutSidenav_nav .sb-sidenav a.nav-link").each(function() {
+					if (this.href === path) {
+						$(this).addClass("active");
+					}
+				});
+
+			// Toggle the side navigation
+			$("#sidebarToggle").on("click", function(e) {
+				e.preventDefault();
+				$("body").toggleClass("sb-sidenav-toggled");
+			});
+		})(jQuery);
+   </script>
+</body>

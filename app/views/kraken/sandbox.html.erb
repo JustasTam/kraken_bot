@@ -1,0 +1,26 @@
+<h1> Kraken API </h1>
+
+<p> balance: <%= @balance %> </p>
+<p> todays trades: <%= @my_trades %> </p>
+
+-------------------------------
+
+<!-- <p> Active orders: <%= @active_orders %> </p> -->
+
+
+<p> 24h average price: <%= @average_24 %> </p>
+<p> buy: <%= @average_24 - 0.005 %> </p>
+<p> sell: <%= @average_24 + 0.005 %> </p>
+<p style="color:green"> 24h low price: <%= @low_24 %> </p>
+<p style="color:red"> 24h high price: <%= @high_24 %> </p>
+
+<p> last info: <%= @last_info %> </p>
+
+-------------------------------
+
+
+<%= button_to 'Call Action', button_path, method: :post %>
+
+<% if flash[:message].present? %>
+	<p style="color:red"> <%= flash[:message] %> </p>
+<% end %>

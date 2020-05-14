@@ -1,0 +1,39 @@
+TODO:
+
+essentials:
+	
+☑	add order
+☑	cron action/bot script
+
+secondary:
+	
+☑	get last 24h average
+	calculate when to do action:
+☑		buy - 0.005ct below 24h average 
+			and still falling, and starts rising
+☑		sell - 0.005ct above 24h average
+			and still rising, starts falling
+		recalculate if hasnt bought/sold in 10hours / but not lower than bought
+☑	calculate volume (balance / price || usdt balance)
+☑	store sensitive data (kraken keys, config gmail login/psw) in settings or other file
+		push to github
+	make key distributor - use different keys every call (5key pairs in total)
+☑	send emails/notifications when sell/buy is trigered
+		add more data/statistic to the email
+☑	cach errors / restart server automaticaly or atleast send crash report
+
+nice to have (store data in db):
+
+☑	show my trades of the day (Time.current.beginning_of_day.to_time.to_i)
+☑	pretier interface
+	calculate days/weeks/months proffit / add to bar chart
+	add coin graph
+	order datatable by newest
+	move rufus cron to other method/crontroller/project
+	double check low/high values
+	add active order info / cancel order
+
+
+
+/----------------------------------------------------------------/
+rails dev:cache # turn on caching in dev env

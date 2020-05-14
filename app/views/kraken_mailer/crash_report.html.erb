@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+
+    <h1 style="color: red">Bot crash report:</h1>
+    <p>
+      Crashed at: <span style="color: blue"><%= @time %></span>
+    </p>
+
+    <p>
+      Crashed during: <%= @action %>
+    </p>
+
+    <p>
+      Raw message: <span style="color: red"><%= @raw_message %></span>
+    </p>    
+
+  </body>
+</html>

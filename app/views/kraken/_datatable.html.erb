@@ -1,0 +1,55 @@
+<div class="card mb-4">
+  <div class="card-header"><i class="fas fa-table mr-1"></i>Trades history</div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead> 
+          <tr>
+            <th class="id_field">ID</th>
+            <th>Date</th>
+            <th>Coin/Pair</th>
+            <th>Price</th>
+            <th>Volume</th>
+            <th>Cost</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% if @my_trades.any? %>
+            <% @my_trades.each do |trade| %>
+              <tr>
+                <td class="id_field"><%= trade.first %></td>
+                <td><%= Time.at(trade.second["time"]).strftime("%F %R") %></td>
+                <td><%= trade.second["pair"] %></td>
+                <td><%= trade.second["price"].to_f  .round(4) %></td>
+                <td><%= trade.second["vol"].to_f  .round(4) %></td>
+                <td><%= trade.second["cost"].to_f .round(4) %></td>
+                <td class=<%= trade.second["type"]=="sell" ? 'type-sell' : 'type-buy' %>>
+                  <%= trade.second["type"] %>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style type="text/css">
+  #id_field {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display:block;
+    width : 50px;
+  }
+  .type-sell {
+    color: green;
+  }
+  .type-buy {
+    color: red;
+  }
+</style>

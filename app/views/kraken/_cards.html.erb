@@ -1,0 +1,41 @@
+<div class="row">
+  <div class="col-xl-3 col-md-6">
+    <div class="card bg-primary text-white mb-4">
+      <div class="card-body">Balance</div>
+      <div class="card-footer d-flex align-items-center justify-content-between">
+
+        <% eur = @balance.select{ |a,b| a == "ZEUR" } %>
+        <% tether = @balance.select{ |a,b| a == "USDT" } %>
+
+          <div class="small text-white"><%= eur.first.first %>:</div>
+          <div class="small text-white right"><%= eur.first.second %></i></div>
+          <div class="small text-white"><%= tether.first.first %>:</div>
+          <div class="small text-white right"><%= tether.first.second.to_f.round(4) %></i></div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="card bg-primary text-white mb-4">
+      <div class="card-body">Low / High</div>
+      <div class="card-footer d-flex align-items-center justify-content-between">
+
+        <div class="small text-white"><%= @low_24 %> / <%= @high_24 %></div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="card bg-warning text-white mb-4">
+      <div class="card-body">USDT 24h average</div>
+      <div class="card-footer d-flex align-items-center justify-content-between">
+
+        <div class="small text-white"><%= @average_24 %></div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
