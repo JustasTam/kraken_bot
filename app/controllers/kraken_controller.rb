@@ -51,24 +51,23 @@ class KrakenController < ApplicationController
 				end
 
 	    elsif balance["result"]["ZEUR"].to_f.round(4) > 10 # sold / requires buy action
-	    	# TODO: move "0.004" num to place where it could be set dinamicaly
-	    	price = @average_24 - 0.004
+	    	price = calculate_price('buy')
 	    	volume = balance["result"]["ZEUR"].to_f.round(4) / price
 	    	volume = volume.round(4) # double check
 
 	    	Rails.logger.fatal "Buying (price: #{price}, volume: #{volume})"
 	    	KrakenMailer.with(action: 'Buying', price: price, volume: volume).notify_email.deliver_now
 
-	    	add_buy_order(price, volume) # default (price = 0.922, volume = 5)
+	    	add_buy_order(price, volume)
 	    else # no active orders - meaning that buy action succeded / requires sell
 	    	# TODO: notify if sell price is getting closer to bought price
-	    	price = @average_24 + 0.004
+	    	price = calculate_price('sell')
 	    	volume = balance["result"]["USDT"].to_f.round(4)
 
 	    	Rails.logger.fatal "Selling (price: #{price}, volume: #{volume})"
 	    	KrakenMailer.with(action: 'Selling', price: price, volume: volume).notify_email.deliver_now
 
-	    	add_sell_order(price, volume) # default (price = 0.927, volume = 5)
+	    	add_sell_order(price, volume)
 	    end
 
 	  end
@@ -102,8 +101,9 @@ class KrakenController < ApplicationController
 			@average_24 = ticker["result"]["USDTEUR"]["p"].second.to_f.round(4)
 			@low_24 = ticker["result"]["USDTEUR"]["l"].second.to_f.round(4)
 			@high_24 = ticker["result"]["USDTEUR"]["h"].second.to_f.round(4)
+			@latest_price = ticker["result"]["USDTEUR"]["c"].first.to_f.round(4)
 
-			@last_info = ticker["result"]["USDTEUR"]
+			# @last_info = ticker["result"]["USDTEUR"]
 		end
 	end
 
@@ -119,7 +119,24 @@ class KrakenController < ApplicationController
 		else
 			return balance["result"]
 		end
-	end	
+	end
+
+	def calculate_price(action)
+		# TODO: move "0.004" num to place where it could be set dinamicaly
+		margin = 0.004
+		
+		if action == 'buy'
+			price = @average_24 - margin
+			price = price > @latest_price ? (@latest_price + 0.0005) : price
+		end
+
+		if action == 'sell'
+			price = @average_24 + margin
+			price = price < @latest_price ? (@latest_price - 0.0005) : price
+		end
+
+		return price
+	end
 
 	def check_eur_balance
 		# Rails.cache.fetch("user_usd_balance", expires_in: 10.minutes) do
@@ -149,11 +166,11 @@ class KrakenController < ApplicationController
 		end
 	end
 
-	def add_buy_order(price = 0.922, volume = 5)
+	def add_buy_order(price, volume)
 		`python lib/assets/python/sandbox_krakenapi.py AddOrder pair=usdteur type=buy price="#{price}" volume="#{volume}" ordertype=limit`
 	end
 
-	def add_sell_order(price = 0.927, volume = 5)
+	def add_sell_order(price, volume)
 		`python lib/assets/python/sandbox_krakenapi.py AddOrder pair=usdteur type=sell price="#{price}" volume="#{volume}" ordertype=limit`
 	end
 

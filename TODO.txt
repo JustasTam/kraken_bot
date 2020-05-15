@@ -10,25 +10,28 @@ secondary:
 ☑	get last 24h average
 	calculate when to do action:
 ☑		buy - 0.005ct below 24h average 
+☑			check if current price is lower than average - 0.004
 			and still falling, and starts rising
 ☑		sell - 0.005ct above 24h average
+☑			check if current price is higher than average - 0.004
 			and still rising, starts falling
 		recalculate if hasnt bought/sold in 10hours / but not lower than bought
 ☑			send email notification
+			notify if sell price is closer to bought price
 ☑	calculate volume (balance / price || usdt balance)
 ☑	store sensitive data (kraken keys, config gmail login/psw) in settings or other file
 ☑		push to github
 ☑	send emails/notifications when sell/buy is trigered
-		add more data/statistic to the email (what kind of?)
 ☑	cach errors / restart server automaticaly or atleast send crash report
 	make key distributor - use different keys every call (5key pairs in total)
+		upgrade from every 1min to every 30s
 
 nice to have (store data in db):
 
 ☑	show my trades
 ☑	pretier interface
 	calculate days/weeks/months proffit / add to bar chart
-	add coin graph
+	add coin graph / last trade price
 	order datatable by newest
 	move rufus cron to other method/crontroller/project
 	double check low/high values
