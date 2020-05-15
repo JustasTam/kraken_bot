@@ -20,7 +20,7 @@ KrakenBot::Application.load_tasks
 # load File.join(Rails.root, 'lib', 'tasks', 'task_runner.rake')
 s = Rufus::Scheduler.new
 
-# s.every '1m' do 
-#   Rake::Task['launch_kraken_task'].reenable
-#   Rake::Task['launch_kraken_task'].invoke
-# end
+s.every '1m' do 
+  Rake::Task['launch_kraken_task'].reenable
+  Rake::Task['launch_kraken_task'].invoke
+end

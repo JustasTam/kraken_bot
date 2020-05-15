@@ -14,26 +14,41 @@ class KrakenController < ApplicationController
 
 	def cron_logic
 		get_24hour_average # set average / cached for 5mins
-
-		Rails.logger.fatal "-------------------------------------------"
 		Rails.logger.fatal "Deciding what to do:"
 
 		active_orders = check_active_orders
 		balance = check_eur_balance
 
 		if active_orders["error"].present? || balance["error"].present? # send report email if crashed
-			# TODO: add a flag if email was already sent
-			Rails.logger.fatal "Got an error! - #{active_orders['error'] || balance["error"]}"
-			KrakenMailer.with(
-				action: 'Active order || balance check',
-				raw_message: active_orders["error"] || balance["error"],
-				time: Time.now.strftime("%F %H:%M:%S"),
-			).crash_report.deliver_now
+			Rails.logger.fatal "Got an error! - #{active_orders['error'] || balance['error']}"
+			
+			if !Rails.cache.exist?("crash_email_sent") # flag if email was already sent
+				Rails.cache.fetch("crash_email_sent", :expires_in => 30.minutes) do
+					KrakenMailer.with(
+						action: 'Active order || balance check',
+						raw_message: active_orders["error"] || balance["error"],
+						time: Time.now.strftime("%F %H:%M:%S"),
+					).crash_report.deliver_now
+				end
+			end
 		else
 
-			# TODO: if order was sitting for 10hours, send a notification
 			if active_orders["result"]["open"].any? # sitting on buy or sell
 				Rails.logger.fatal "There are active order/s"
+
+				if !Rails.cache.exist?("stuck_on_order_for_10h") # flag if email was already sent
+					time_now = Time.now.strftime("%F %H:%M:%S").to_time
+					order_time = Time.at(active_orders["result"]["open"].first.second["opentm"]).strftime("%F %H:%M:%S").to_time
+
+					if (time_now > order_time + 10.hours)
+						Rails.cache.fetch("stuck_on_order_for_10h", :expires_in => 30.minutes) do
+							KrakenMailer.with(
+								action: 'Order stuck for 10 or more hours!',
+								description: active_orders["result"]["open"].first.second["descr"]["order"],
+							).stuck_on_order.deliver_now
+						end
+					end
+				end
 
 	    elsif balance["result"]["ZEUR"].to_f.round(4) > 10 # sold / requires buy action
 	    	# TODO: move "0.004" num to place where it could be set dinamicaly
@@ -73,9 +88,9 @@ class KrakenController < ApplicationController
 	end
 
 	def get_24hour_average
-		Rails.logger.info "+++ get_24hour_average +++"
+		Rails.logger.info "Getting new 24h average"
 		ticker = Rails.cache.fetch("categories", :expires_in => 5.minutes) do
-		  Rails.logger.info "+++ Cache missed +++"
+		  Rails.logger.info "Caching value"
 			`python lib/assets/python/sandbox_krakenapi.py Ticker pair=usdteur`
 		end
 

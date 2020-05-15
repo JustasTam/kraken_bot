@@ -14,17 +14,18 @@ secondary:
 ☑		sell - 0.005ct above 24h average
 			and still rising, starts falling
 		recalculate if hasnt bought/sold in 10hours / but not lower than bought
+☑			send email notification
 ☑	calculate volume (balance / price || usdt balance)
 ☑	store sensitive data (kraken keys, config gmail login/psw) in settings or other file
-		push to github
-	make key distributor - use different keys every call (5key pairs in total)
+☑		push to github
 ☑	send emails/notifications when sell/buy is trigered
-		add more data/statistic to the email
+		add more data/statistic to the email (what kind of?)
 ☑	cach errors / restart server automaticaly or atleast send crash report
+	make key distributor - use different keys every call (5key pairs in total)
 
 nice to have (store data in db):
 
-☑	show my trades of the day (Time.current.beginning_of_day.to_time.to_i)
+☑	show my trades
 ☑	pretier interface
 	calculate days/weeks/months proffit / add to bar chart
 	add coin graph
