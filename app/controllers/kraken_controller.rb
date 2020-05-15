@@ -41,7 +41,7 @@ class KrakenController < ApplicationController
 					order_time = Time.at(active_orders["result"]["open"].first.second["opentm"]).strftime("%F %H:%M:%S").to_time
 
 					if (time_now > order_time + 10.hours)
-						Rails.cache.fetch("stuck_on_order_for_10h", :expires_in => 30.minutes) do
+						Rails.cache.fetch("stuck_on_order_for_10h", :expires_in => 60.minutes) do
 							KrakenMailer.with(
 								action: 'Order stuck for 10 or more hours!',
 								description: active_orders["result"]["open"].first.second["descr"]["order"],
@@ -62,7 +62,7 @@ class KrakenController < ApplicationController
 	    else # no active orders - meaning that buy action succeded / requires sell
 	    	# TODO: notify if sell price is getting closer to bought price
 	    	price = calculate_price('sell')
-	    	volume = balance["result"]["USDT"].to_f.round(4)
+	    	volume = balance["result"]["USDT"].to_f.round(4) - 0.0022
 
 	    	Rails.logger.fatal "Selling (price: #{price}, volume: #{volume})"
 	    	KrakenMailer.with(action: 'Selling', price: price, volume: volume).notify_email.deliver_now
@@ -124,7 +124,7 @@ class KrakenController < ApplicationController
 	def calculate_price(action)
 		# TODO: move "0.004" num to place where it could be set dinamicaly
 		margin = 0.004
-		
+
 		if action == 'buy'
 			price = @average_24 - margin
 			price = price > @latest_price ? (@latest_price + 0.0005) : price

@@ -15,7 +15,7 @@ secondary:
 ☑		sell - 0.005ct above 24h average
 ☑			check if current price is higher than average - 0.004
 			and still rising, starts falling
-		recalculate if hasnt bought/sold in 10hours / but not lower than bought
+		recalculate if hasnt bought/sold in 15hours
 ☑			send email notification
 			notify if sell price is closer to bought price
 ☑	calculate volume (balance / price || usdt balance)
@@ -34,8 +34,10 @@ nice to have (store data in db):
 	add coin graph / last trade price
 	order datatable by newest
 	move rufus cron to other method/crontroller/project
-	double check low/high values
-	add active order info / cancel order
+☑	double check low/high values
+	add active order info
+		cancel order
+	send only one email, not 2 (10h notify, probably crash report too)
 
 
 
